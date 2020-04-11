@@ -24,11 +24,20 @@ module.exports = {
       }
     },
     {
-      resolve: 'gatsby-plugin-react-svg',
+      resolve: 'gatsby-plugin-svgr-svgo',
       options: {
-        rule: {
-          include: /\.svg$/
-        }
+        inlineSvgOptions: [
+          {
+            test: /\.svg$/,
+            svgoConfig: {
+              plugins: [
+                {
+                  removeViewBox: false
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     'gatsby-plugin-no-sourcemaps',
