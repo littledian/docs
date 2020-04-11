@@ -13,7 +13,7 @@ module.exports = {
         implementation: require('sass'),
         cssLoaderOptions: {
           modules: true,
-          localIdentName: '[path][name]__[local]--[hash:base64:5]'
+          localIdentName: '[name]__[local]--[hash:base64:5]'
         }
       }
     },
@@ -21,6 +21,14 @@ module.exports = {
       resolve: 'gatsby-plugin-less',
       options: {
         javascriptEnabled: true
+      }
+    },
+    {
+      resolve: 'gatsby-plugin-react-svg',
+      options: {
+        rule: {
+          include: /\.svg$/
+        }
       }
     },
     'gatsby-plugin-no-sourcemaps',

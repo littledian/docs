@@ -1,3 +1,5 @@
 import React from 'react';
+import LogoIcon from './logo.svg';
+import styles from './index.scss';
 
-export const Logo = () => (<div>123</div>);
+export const Logo = () => <LogoIcon className={styles.logo} />;
