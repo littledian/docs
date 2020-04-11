@@ -2,7 +2,6 @@ import React, { forwardRef, useMemo } from 'react';
 import { MenuItem, useCurrentDoc, useMenus } from 'docz';
 import { Menu } from 'antd';
 import { Link } from 'gatsby';
-import styles from './index.scss';
 
 const { SubMenu, Item } = Menu;
 
@@ -46,12 +45,7 @@ export const Sidebar = forwardRef(() => {
   }
 
   return (
-    <Menu
-      className={styles.root}
-      mode="inline"
-      selectedKeys={[currentDoc.id]}
-      defaultOpenKeys={defaultOpenKeys}
-    >
+    <Menu mode="inline" selectedKeys={[currentDoc.id]} defaultOpenKeys={defaultOpenKeys}>
       {menus?.map(mapMenu)}
     </Menu>
   );
