@@ -11,8 +11,9 @@ module.exports = {
       resolve: 'gatsby-plugin-sass',
       options: {
         implementation: require('sass'),
+        sassRuleTest: /\.global\.scss$/,
+        sassRuleModulesTest: /\.scss$/,
         cssLoaderOptions: {
-          modules: true,
           localIdentName: '[name]__[local]--[hash:base64:5]'
         }
       }
