@@ -1,0 +1,33 @@
+:global(body) {
+  display: flex;
+  flex-direction: column;
+}
+
+:global(.footer) {
+  flex-shrink: 0;
+}
+
+:global(#__next) {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.root {
+  overflow: hidden;
+  display: flex;
+  flex: 1;
+}
+
+.aside {
+  width: 300px;
+}
+
+.main {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}

@@ -2,9 +2,19 @@ module.exports = {
   extends: ['alloy', 'alloy/react', 'alloy/typescript', 'prettier'],
   plugins: ['prettier', 'react-hooks'],
   env: {
-    browser: true
+    // Your environments (which contains several predefined global variables)
+    //
+    browser: true,
+    node: true
+    // mocha: true,
+    // jest: true,
+    // jquery: true
   },
-  globals: {},
+  globals: {
+    // Your global variables (setting to false means it's not allowed to be reassigned)
+    //
+    yamlValues: false
+  },
   rules: {
     '@typescript-eslint/explicit-member-accessibility': [
       'error',
@@ -18,10 +28,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['gatsby-config.js', 'gatsby-node.js'],
-      env: {
-        node: true
-      },
+      files: ['next.config.js', 'server.js', 'scripts/*'],
       rules: {
         '@typescript-eslint/no-require-imports': ['off']
       }

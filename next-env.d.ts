@@ -1,3 +1,6 @@
+/// <reference types="next" />
+/// <reference types="next/types/global" />
+
 declare module '*.scss' {
   interface IClassNames {
     [className: string]: string;
@@ -6,7 +9,4 @@ declare module '*.scss' {
   export = classNames;
 }
 
-declare module '*.svg' {
-  const value: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
-  export default value;
-}
+declare const yamlValues: Array<{ path: string; value: any }>;

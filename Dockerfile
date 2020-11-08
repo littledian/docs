@@ -1,6 +1,12 @@
-FROM nginx:1.15.6
-
+FROM node:12.18.3-alpine3.10
 MAINTAINER littledian 1197434548@qq.com
 
-COPY public /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
+WORKDIR /app
+COPY . .
+
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm install --production
+
+CMD ["npm", "start"]
+
+EXPOSE 3000
