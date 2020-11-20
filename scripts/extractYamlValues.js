@@ -24,10 +24,14 @@ module.exports = () => {
 
   const root = path.join(__dirname, '../pages');
   const fileContents = getFileContentByDir(root);
+  const length = root.length;
 
   return fileContents.map((item) => {
-    const { path, value } = item;
+    const { path: filePath, value } = item;
     const newValue = mdxCompiler.processSync(value);
-    return { path, value: newValue.data.frontmatter };
+    return {
+      path: filePath.substring(length + 1).replace(/(.+)\.\w+$/, '$1'),
+      value: newValue.data.frontmatter
+    };
   });
 };

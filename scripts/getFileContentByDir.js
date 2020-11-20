@@ -10,7 +10,7 @@ function getFileContentByDir(root) {
     const subPath = path.join(root, file);
     const stat = fs.statSync(subPath);
     if (stat.isDirectory()) {
-      array = array.concat(getFileContentByDir(root));
+      array = array.concat(getFileContentByDir(subPath));
       return;
     }
     if (stat.isFile()) {

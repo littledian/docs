@@ -15,23 +15,40 @@ interface MenuInfo {
 function getMenusFromYamlValue(): MenuInfo[] {
   const menus: MenuInfo[] = [];
   yamlValues.forEach((item) => {
-    if (item.value === null || typeof item.value !== 'object') return;
-    const { name, route } = item.value;
-    if (typeof name !== 'string' || typeof route !== 'string') return;
-    const array = name.split('/');
+    let { path, value } = item;
+    if (value === null || typeof value !== 'object') return;
+    const name = item.value?.name;
+    if (typeof name !== 'string') return;
+    path = path.replace(/\\/g, '/');
+    const route = path === 'index' ? '' : path.replace(/(.*)\/index$/, '$1');
+    if (!route) {
+      menus.push({
+        title: name,
+        key: path,
+        route: '/'
+      });
+      return;
+    }
+    const array = route.replace(/(.*)\/index$/, '$1').split('/');
     let parent = menus;
     let prevKey = '';
     array.forEach((s, index) => {
-      let menu = parent.find((sub) => sub.title === 's');
-      if (!menu)
+      const key = prevKey ? prevKey + '/' + s : s;
+      let menu = parent.find((sub) => sub.key === key);
+      if (!menu) {
         menu = {
-          title: s,
-          key: prevKey + s,
-          route: index === array.length - 1 ? route : undefined
+          title: '',
+          key,
+          route: index === array.length - 1 ? `/${path}` : undefined,
+          children: []
         };
-      parent.push(menu);
-      parent = menu.children || [];
-      prevKey += `/${s}`;
+        parent.push(menu);
+      }
+      if (index === array.length - 1) {
+        menu.title = name;
+      }
+      parent = menu.children;
+      prevKey = key;
     });
   });
 
@@ -53,29 +70,56 @@ const renderMenuItem = (menu: MenuInfo) => {
     );
   }
 
-  return <Menu.SubMenu key={menu.key}>{menu.children.map(renderMenuItem)}</Menu.SubMenu>;
+  return (
+    <Menu.SubMenu key={menu.key} title={menu.title}>
+      {menu.children.map(renderMenuItem)}
+    </Menu.SubMenu>
+  );
 };
 
 const menus = getMenusFromYamlValue().map(renderMenuItem);
 
-export default class App extends NextApp<{ pageProps: any }> {
+export interface AppProps {
+  pageProps: any;
+  defaultExpandKeys: string[];
+  defaultSelectedKeys: string[];
+}
+
+export default class App extends NextApp<AppProps> {
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {};
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);
     }
 
-    return { pageProps };
+    const pathname = ctx.pathname.substring(1);
+    const defaultExpandKeys = pathname
+      ? pathname.split('/').reduce((prev, val) => {
+          if (prev.length === 0) prev.push(val);
+          else prev.push(`${prev[prev.length - 1]}/${val}`);
+          return prev;
+        }, [])
+      : [];
+
+    const defaultSelectedKeys = pathname === '' ? ['index'] : [pathname];
+
+    return { pageProps, defaultExpandKeys, defaultSelectedKeys };
   }
 
   render() {
-    const { Component, pageProps } = this.props;
+    const { Component, pageProps, defaultExpandKeys, defaultSelectedKeys } = this.props;
 
     return (
       <ConfigProvider locale={zhCN}>
         <div className={styles.root}>
           <div className={styles.aside}>
-            <Menu>{menus}</Menu>
+            <Menu
+              defaultOpenKeys={defaultExpandKeys}
+              defaultSelectedKeys={defaultSelectedKeys}
+              mode="inline"
+            >
+              {menus}
+            </Menu>
           </div>
           <div className={styles.main}>
             <Component {...pageProps} />
