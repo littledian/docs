@@ -1,5 +1,4 @@
 import http from '@/utils/http';
-import { HTMLAttributes, ScriptHTMLAttributes, StyleHTMLAttributes } from 'react';
 
 export interface BlockItem {
   html: {
