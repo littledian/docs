@@ -9,7 +9,19 @@ interface MenuInfo {
   title: string;
   key: string;
   route?: string;
+  index?: number;
   children?: MenuInfo[];
+}
+
+function sortMenus(menus: MenuInfo[]): MenuInfo[] {
+  const res = menus.sort((a, b) => a.index - b.index);
+  res.forEach((menu) => {
+    if (menu.children?.length) {
+      menu.children = sortMenus(menu.children);
+    }
+  });
+
+  return res;
 }
 
 function getMenusFromYamlValue(): MenuInfo[] {
@@ -17,7 +29,7 @@ function getMenusFromYamlValue(): MenuInfo[] {
   yamlValues.forEach((item) => {
     let { path, value } = item;
     if (value === null || typeof value !== 'object') return;
-    const name = item.value?.name;
+    const { name, index: indexValue = 100 } = item.value || {};
     if (typeof name !== 'string') return;
     path = path.replace(/\\/g, '/');
     const route = path === 'index' ? '' : path.replace(/(.*)\/index$/, '$1');
@@ -25,7 +37,8 @@ function getMenusFromYamlValue(): MenuInfo[] {
       menus.push({
         title: name,
         key: path,
-        route: '/'
+        route: '/',
+        index: indexValue
       });
       return;
     }
@@ -46,13 +59,14 @@ function getMenusFromYamlValue(): MenuInfo[] {
       }
       if (index === array.length - 1) {
         menu.title = name;
+        menu.index = indexValue;
       }
       parent = menu.children;
       prevKey = key;
     });
   });
 
-  return menus;
+  return sortMenus(menus);
 }
 
 const renderMenuItem = (menu: MenuInfo) => {
